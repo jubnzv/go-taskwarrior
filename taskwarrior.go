@@ -19,13 +19,12 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 //OR OTHER DEALINGS IN THE SOFTWARE.
 
-// API bindings to taskwarrior database
+// API bindings to taskwarrior database.
 
 package taskwarrior
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -35,7 +34,7 @@ import (
 )
 
 // Default configuration path
-var TASKRC = "~/.taskrc"
+//var TASKRC = "~/.taskrc"
 
 // Keep configration file values
 type TaskRC struct {
@@ -50,19 +49,19 @@ type TaskWarrior struct {
 }
 
 // Parse taskwarriror configuration file (default ~/.taskrc)
-func ParseConfig(config_path string) (c *TaskRC, err error) {
+func ParseConfig(configPath string) (c *TaskRC, err error) {
 	c = new(TaskRC)
 	c.Values = make(map[string]string)
 
 	// Expand tilda in filepath
-	if config_path[:2] == "~/" {
-		user, _ := user.Current()
-		homedir := user.HomeDir
-		config_path = filepath.Join(homedir, config_path[2:])
+	if configPath[:2] == "~/" {
+		userDir, _ := user.Current()
+		homeDir := userDir.HomeDir
+		configPath = filepath.Join(homeDir, configPath[2:])
 	}
 
 	// Read the configuration
-	file, err := os.Open(config_path)
+	file, err := os.Open(configPath)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -87,7 +86,7 @@ func ParseConfig(config_path string) (c *TaskRC, err error) {
 
 		// Exclude some patterns
 		switch line[0] {
-		case '#': // Commented
+		case '#': // Commented string
 			continue
 		}
 		if strings.HasPrefix(string(parts[0]), "include") { // Include additional plugins / themes
@@ -108,30 +107,17 @@ func ParseConfig(config_path string) (c *TaskRC, err error) {
 	return
 }
 
-// Custom unmarshaller for task data files
-func (t *Task) UnmarshalJSON(buf []byte) (err error) {
-	tmp := []interface{}{&t.Description, &t.Entry, &t.Modified, &t.Project, &t.Status, &t.Uuid}
-	want_len := len(tmp)
-	if err = json.Unmarshal(buf, &tmp); err != nil {
-		return
-	}
-	if g, e := len(tmp), want_len; g != e {
-		return fmt.Errorf("wrong number of fields in Task: %d != %d", g, e)
-	}
-
-	return
-}
-
-// Read data file from 'data.location' filepath
-// We are interested in two files in this dir: `completed.data` and `pending.data` that represents data entries as json arrays.
+// Read data file from 'data.location' filepath.
+// We are interested in two files in this dir: `completed.data` and `pending.data` that represents data entries
+// with format very similar to JSON arrays.
 func ReadDataFile(filepath string) (tasks []Task, err error) {
-	data_file, err := os.Open(filepath)
+	dataFile, err := os.Open(filepath)
 	if err != nil {
 		return
 	}
-	defer data_file.Close()
+	defer dataFile.Close()
 
-	buf, err := ioutil.ReadAll(data_file)
+	buf, err := ioutil.ReadAll(dataFile)
 	if err != nil {
 		return
 	}
@@ -139,33 +125,33 @@ func ReadDataFile(filepath string) (tasks []Task, err error) {
 	lines := bytes.Split(buf, []byte{'\n'})
 	for _, line := range lines[:len(lines)-1] {
 		fmt.Println(string(line))
-		buf_task, e := ParseTask(string(line))
+		bufTask, e := ParseTask(string(line))
 		if e != nil {
 			return
 		}
-		tasks = append(tasks, *buf_task)
+		tasks = append(tasks, *bufTask)
 	}
 
 	return
 }
 
-// Create new TaskWarrior instance
-func NewTaskWarrior(config_path string) (tw *TaskWarrior, err error) {
+// Create new TaskWarrior instance.
+func NewTaskWarrior(configPath string) (tw *TaskWarrior, err error) {
 	// Read the configuration file
-	c, err := ParseConfig(config_path)
+	c, err := ParseConfig(configPath)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	// Initialize hashmap for active tasks
+	// Initialize hashmap for active tasks.
 	tp, err := ReadDataFile(c.Values["data.location"] + "/pending.data")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	// Initialize hashmap for completed tasks
+	// Initialize hashmap for completed tasks.
 	tc, err := ReadDataFile(c.Values["data.location"] + "/completed.data")
 	if err != nil {
 		fmt.Println(err)
