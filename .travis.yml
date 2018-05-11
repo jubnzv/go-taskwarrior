@@ -7,9 +7,13 @@ go:
   - 1.8.x
   - 1.9.x
   - 1.10.x
+  - tip # The latest version of Go.
 
 script:
   - go get golang.org/x/tools/cmd/cover
   - go get github.com/smartystreets/goconvey
   - cd $HOME/gopath/src/github.com/jubnzv/go-taskwarrior
-  - go test -v -cover -race
+  - go test -v -cover -race -coverprofile=coverage.txt -covermode=atomic
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
