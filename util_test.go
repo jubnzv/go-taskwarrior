@@ -19,24 +19,23 @@
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 //OR OTHER DEALINGS IN THE SOFTWARE.
 
-package taskwarrior_test
+package taskwarrior
 
 import (
-	tw "../go-taskwarrior"
 	"testing"
 )
 
 func TestParseTask(t *testing.T) {
 	var parseTests = []struct {
 		in   string
-		want *tw.Task
+		want *Task
 	}{
-		{"[description:\"foo\"]", &tw.Task{Description: "foo"}},
-		{"[description:\"Write tests\" entry:\"1515066136\" modified:\"1515066136\" project:\"go-taskwarrior\" status:\"pending\" uuid:\"1793f808-0d06-4e9f-95a9-f8ac50ba5c03\"]", &tw.Task{Description: "Write tests", Entry: "1515066136", Modified: "1515066136", Project: "go-taskwarrior", Status: "pending", Uuid: "1793f808-0d06-4e9f-95a9-f8ac50ba5c03"}},
+		{"[description:\"foo\"]", &Task{Description: "foo"}},
+		{"[description:\"Write tests\" entry:\"1515066136\" modified:\"1515066136\" project:\"go-taskwarrior\" status:\"pending\" uuid:\"1793f808-0d06-4e9f-95a9-f8ac50ba5c03\"]", &Task{Description: "Write tests", Entry: "1515066136", Modified: "1515066136", Project: "go-taskwarrior", Status: "pending", Uuid: "1793f808-0d06-4e9f-95a9-f8ac50ba5c03"}},
 	}
 
 	for _, test := range parseTests {
-		got, _ := tw.ParseTask(test.in)
+		got, _ := ParseTask(test.in)
 		if *got != *test.want {
 			t.Errorf("Error while parsing %s:\n\tgot\t%s\n\twant\t%s\n", test.in, got, test.want)
 		} else {

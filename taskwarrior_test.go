@@ -22,14 +22,13 @@
 package taskwarrior
 
 import (
-	tw "../go-taskwarrior"
 	"testing"
 )
 
 // Read sample data that contains json arrays of tasks
 func TestReadDataFile(t *testing.T) {
 	fixture_pending := "./fixtures/2/pending.data"
-	ptasks, err := tw.ReadDataFile(fixture_pending)
+	ptasks, err := ReadDataFile(fixture_pending)
 	if err != nil {
 		t.Errorf("Error while reading %s: %s", fixture_pending, err)
 	}
@@ -39,7 +38,7 @@ func TestReadDataFile(t *testing.T) {
 // Create taskwarrior with custom config and test it values
 func TestTaskWarriorConfiguration(t *testing.T) {
 	fixture_1 := "./fixtures/1/taskrc"
-	warrior, _ := tw.NewTaskWarrior(fixture_1)
+	warrior, _ := NewTaskWarrior(fixture_1)
 	config := warrior.Config
 	config_values := config.Values
 
@@ -63,7 +62,7 @@ func TestTaskWarriorTasks(t *testing.T) {
 	fixture_2 := "./fixtures/2/taskrc"
 	len_p_2 := 2 // Desired number of pending tasks
 	len_c_2 := 1 // Desired number of completed tasks
-	warrior, _ := tw.NewTaskWarrior(fixture_2)
+	warrior, _ := NewTaskWarrior(fixture_2)
 
 	ptasks := warrior.TasksPending
 	if len(ptasks) != len_p_2 {
@@ -84,7 +83,7 @@ func TestTaskWarriorTasks(t *testing.T) {
 func TestFetchTasks(t *testing.T) {
 	fixture_2 := "./fixtures/2/taskrc"
 	len_2 := 3 // Desired number of tasks
-	warrior, _ := tw.NewTaskWarrior(fixture_2)
+	warrior, _ := NewTaskWarrior(fixture_2)
 
 	tasks := warrior.FetchTasks()
 	if len(tasks) != len_2 {
