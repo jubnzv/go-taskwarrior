@@ -1,0 +1,15 @@
+sudo: false
+language: go
+go:
+  - 1.5.x
+  - 1.6.x
+  - 1.7.x
+  - 1.8.x
+  - 1.9.x
+  - 1.10.x
+
+script:
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/smartystreets/goconvey
+  - cd $HOME/gopath/src/github.com/jubnzv/go-taskwarrior
+  - go test -v -cover -race
