@@ -1,5 +1,0 @@
-include /usr/share/taskwarrior/dark-256.theme
-
-data.location=./fixtures/1/
-confirmation = no
-weekstart = monday

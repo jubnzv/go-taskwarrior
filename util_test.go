@@ -38,8 +38,6 @@ func TestParseTask(t *testing.T) {
 		got, _ := ParseTask(test.in)
 		if *got != *test.want {
 			t.Errorf("Error while parsing %s:\n\tgot\t%v\n\twant\t%v\n", test.in, got, test.want)
-		} else {
-			t.Logf("Parse successful %s:\n\tgot\t%v\n\twant\t%v\n", test.in, got, test.want)
 		}
 	}
 }

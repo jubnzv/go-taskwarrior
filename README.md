@@ -6,7 +6,4 @@
 
 Golang API for [taskwarrior](https://taskwarrior.org/) database.
 
-## Usage
-
-See package tests for usage examples.
-
+WIP. I will update README section on the progress of work.
