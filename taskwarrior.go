@@ -1,81 +1,47 @@
 // The MIT License (MIT)
 // Copyright (C) 2018 Georgy Komarov <jubnzv@gmail.com>
 //
-// API bindings to taskwarrior database.
+// Most general definitions to manage list of tasks and taskwarrior instance configuration.
+//
+// To interact with taskwarrior I decided to use their command-line interface, instead manually parse .data files
+// from `data.location` option. This solution looks better because there are few unique .data formats depending of
+// taskwarrior version. For more detailed explanations see: https://taskwarrior.org/docs/3rd-party.html.
 
 package taskwarrior
 
 import (
-	"bytes"
+	"os/exec"
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"os"
 )
 
-// Represent a taskwarrior instance
+// Represents a single taskwarrior instance.
 type TaskWarrior struct {
-	Config         *TaskRC // Configuration table
-	TasksPending   []Task  // Pending tasks
-	TasksCompleted []Task  // Completed tasks
+	Config      *TaskRC // Configuration options
+	Tasks		[]Task  // Task JSON entries
 }
 
-// Read data file from 'data.location' filepath.
-// We are interested in two files in this dir: `completed.data` and `pending.data` that represents data entries
-// with format very similar to JSON arrays.
-func ReadDataFile(filepath string) (tasks []Task, err error) {
-	dataFile, err := os.Open(filepath)
-	if err != nil {
-		return
-	}
-	defer dataFile.Close()
-
-	buf, err := ioutil.ReadAll(dataFile)
-	if err != nil {
-		return
-	}
-
-	lines := bytes.Split(buf, []byte{'\n'})
-	for _, line := range lines[:len(lines)-1] {
-		fmt.Println(string(line))
-		bufTask, e := ParseTask(string(line))
-		if e != nil {
-			return
-		}
-		tasks = append(tasks, *bufTask)
-	}
-
-	return
-}
-
-// Create new TaskWarrior instance.
+// Create new empty TaskWarrior instance.
 func NewTaskWarrior(configPath string) (*TaskWarrior, error) {
 	// Read the configuration file.
 	taskRC, err := ParseTaskRC(configPath); if err != nil {
 		return nil, err
 	}
 
-	// Initialize active tasks.
-	tasksPending, err := ReadDataFile(taskRC.DataLocation + "/pending.data"); if err != nil {
-		return nil, err
-	}
-
-	// Initialize completed tasks.
-	tasksCompleted, err := ReadDataFile(taskRC.DataLocation + "/completed.data"); if err != nil {
-		return nil, err
-	}
-
 	// Create new TaskWarrior instance.
-	tw := &TaskWarrior{
-		Config:         taskRC,
-		TasksPending:   tasksPending,
-		TasksCompleted: tasksCompleted,
-	}
-
+	tw := &TaskWarrior{Config: taskRC}
 	return tw, nil
 }
 
-// Fetch tasks for current taskwarrior.
-func (tw *TaskWarrior) FetchTasks() (tasks []Task) {
-	tasks = append(tw.TasksCompleted, tw.TasksPending...)
-	return
+// Fetch all tasks for given TaskWarrior with system `taskwarrior` command call.
+func (tw *TaskWarrior) FetchAllTasks() error {
+	rcOpt := "rc:" + tw.Config.ConfigPath
+	out, err := exec.Command("task", rcOpt, "export").Output(); if err != nil {
+		return err
+	}
+	err = json.Unmarshal([]byte(out), &tw.Tasks); if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
 }

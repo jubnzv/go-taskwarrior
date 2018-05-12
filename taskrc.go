@@ -42,10 +42,11 @@ import (
 )
 
 // Default configuration path.
-var TASKRC = "~/.taskrc"
+var TASKRC = PathExpandTilda("~/.taskrc")
 
 // Describes configuration file entries that currently supported by this library.
 type TaskRC struct {
+	ConfigPath		string	// Location of this .taskrc
 	DataLocation	string	`taskwarrior:"data.location"`
 }
 
@@ -55,6 +56,10 @@ var reInclude = regexp.MustCompile(`^\s*include\s*(.*)\s*$`)
 
 // Expand tilda in filepath as $HOME of current user.
 func PathExpandTilda(path string) string {
+	if len(path) < 2 {
+		return path
+	}
+
 	fixedPath := path
 	if fixedPath[:2] == "~/" {
 		userDir, _ := user.Current()
@@ -87,7 +92,7 @@ func ParseTaskRC(configPath string) (*TaskRC, error) {
 	}
 
 	// Map content in new TaskRC instance
-	task := TaskRC{}
+	task := TaskRC{ConfigPath:configPath}
 	task.MapTaskRC(string(buf[:]))
 
 	return &task, nil

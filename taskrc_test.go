@@ -79,12 +79,32 @@ func TestParseTaskRC(t *testing.T) {
 	config1 := "./fixtures/taskrc/simple_1"
 	orig1 := "./fixtures/data_1"
 	expected1 := &TaskRC{DataLocation:orig1}
-	result1, err1 := ParseTaskRC(config1)
-	if err1 != nil {
-		t.Errorf("Can't parse configuration file %s with following error: %v", config1, err1)
+	result1, err := ParseTaskRC(config1)
+	if err != nil {
+		t.Errorf("Can't parse configuration file %s with following error: %v",
+			config1, err)
 	}
 	if expected1.DataLocation != result1.DataLocation {
 		t.Errorf("There are some problems to set DataLocation: expected '%s' got '%s'",
 			expected1.DataLocation, result1.DataLocation)
+	}
+
+	// Use default config location (~/.taskrc)
+	config2 := ""
+	result2, err := ParseTaskRC(config2)
+	if err != nil {
+		t.Errorf("Can't parse configuration file %s with following error: %v",
+			result2.ConfigPath, err)
+	}
+	if result2.ConfigPath != TASKRC {
+		t.Errorf("There are some problems to set ConfigPath: expected '%s' got '%s'",
+			result2.ConfigPath, TASKRC)
+	}
+
+	// Incorrect permissions
+	config3 := "./fixtures/taskrc/err_permissions_1"
+	_, err = ParseTaskRC(config3)
+	if err == nil {
+		t.Errorf("Read configuration file '%s' content without permissions?", config3)
 	}
 }

@@ -6,4 +6,14 @@
 
 Golang API for [taskwarrior](https://taskwarrior.org/) database.
 
-WIP. I will update README section on the progress of work.
+## Features
+
+* Custom parser for `.taskrc` configuration files
+* Read access to taskwarrior database
+
+## Quickstart
+
+```
+tw, err := NewTaskWarrior("~/.taskrc")
+tw.FetchAllTasks()
+```
