@@ -15,8 +15,8 @@ before_install:
 
 script:
   - go get golang.org/x/tools/cmd/cover
-  - go get github.com/smartystreets/goconvey
   - cd $HOME/gopath/src/github.com/jubnzv/go-taskwarrior
+  - yes "yes" | task
   - chmod 000 ./fixtures/taskrc/err_permissions_1
   - go test -v -cover -race -coverprofile=coverage.txt -covermode=atomic
 
