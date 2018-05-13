@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"encoding/json"
 	"fmt"
+	"os"
 )
 
 // Represents a single taskwarrior instance.
@@ -44,4 +45,10 @@ func (tw *TaskWarrior) FetchAllTasks() error {
 		return err
 	}
 	return nil
+}
+
+// Pretty print for all tasks represented in given TaskWarrior.
+func (tw *TaskWarrior) PrintTasks() {
+	out, _ := json.MarshalIndent(tw.Tasks, "", "\t")
+	os.Stdout.Write(out)
 }

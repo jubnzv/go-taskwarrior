@@ -16,4 +16,7 @@ Golang API for [taskwarrior](https://taskwarrior.org/) database.
 ```
 tw, err := NewTaskWarrior("~/.taskrc")
 tw.FetchAllTasks()
+tw.PrintTasks()
 ```
+
+For more samples see `examples` directory.
