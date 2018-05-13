@@ -16,7 +16,7 @@ before_install:
 script:
   - go get golang.org/x/tools/cmd/cover
   - cd $HOME/gopath/src/github.com/jubnzv/go-taskwarrior
-  - yes "yes" | task
+  - yes "yes" | task || true # $? == 0
   - chmod 000 ./fixtures/taskrc/err_permissions_1
   - go test -v -cover -race -coverprofile=coverage.txt -covermode=atomic
 
