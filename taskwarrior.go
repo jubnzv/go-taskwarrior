@@ -14,6 +14,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"bytes"
 )
 
 // Represents a single taskwarrior instance.
@@ -51,4 +52,24 @@ func (tw *TaskWarrior) FetchAllTasks() error {
 func (tw *TaskWarrior) PrintTasks() {
 	out, _ := json.MarshalIndent(tw.Tasks, "", "\t")
 	os.Stdout.Write(out)
+}
+
+// Add new Task entry to given TaskWarrior.
+func (tw *TaskWarrior) AddTask(task *Task) {
+	tw.Tasks = append(tw.Tasks, *task)
+}
+
+// Save current changes of given TaskWarrior instance.
+func (tw *TaskWarrior) Commit() error {
+	tasks, err := json.Marshal(tw.Tasks); if err != nil {
+		return err
+	}
+
+	cmd := exec.Command("task", "import", "-")
+	cmd.Stdin = bytes.NewBuffer(tasks)
+	err = cmd.Run(); if err != nil {
+		return err
+	}
+
+	return nil
 }

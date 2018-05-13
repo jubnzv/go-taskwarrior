@@ -10,8 +10,11 @@ Golang API for [taskwarrior](https://taskwarrior.org/) database.
 
 * Custom parser for `.taskrc` configuration files
 * Read access to taskwarrior database
+* Adding/modifying existing tasks
 
 ## Quickstart
+
+Read all tasks for current user:
 
 ```
 tw, err := NewTaskWarrior("~/.taskrc")
@@ -19,4 +22,10 @@ tw.FetchAllTasks()
 tw.PrintTasks()
 ```
 
-For more samples see `examples` directory.
+To add new task initialize `Task` object with desired values and use:
+```
+tw.Add(newTask)
+tw.Commit() // Save changes
+```
+
+For more samples see `examples` directory and package tests.

@@ -59,7 +59,20 @@ func TestTaskWarrior_FetchAllTasks(t *testing.T) {
 	}
 	tw1.FetchAllTasks()
 	if len(tasks) != len(tw1.Tasks) {
-		t.Errorf("FetchAllTasks response mismatch: expect %d for %d",
+		t.Errorf("FetchAllTasks response mismatch: expect %d got %d",
 			len(tasks), len(tw1.Tasks))
+	}
+}
+
+func TestTaskWarrior_AddTask(t *testing.T) {
+	config1 := "~/.taskrc"
+	taskrc1 := &TaskRC{ConfigPath:config1}
+	expected1 := &TaskWarrior{Config:taskrc1}
+	result1, _ := NewTaskWarrior(config1)
+	t1 := &Task{}
+	result1.AddTask(t1)
+	if len(expected1.Tasks) + 1 != len(result1.Tasks) {
+		t.Errorf("Incorrect AddTask: wait tasks count '%d' got '%d'",
+			len(expected1.Tasks)+1, len(result1.Tasks))
 	}
 }
