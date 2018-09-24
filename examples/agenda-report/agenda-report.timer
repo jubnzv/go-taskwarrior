@@ -1,0 +1,9 @@
+[Unit]
+Description=Run daily agenda-reports
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target

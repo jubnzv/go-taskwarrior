@@ -1,0 +1,10 @@
+[Unit]
+Description=agenda-report
+
+[Service]
+Environment="DISPLAY=:0"
+ExecStart=/home/jubnzv/.local/scripts/agenda-report
+Type=oneshot
+
+[Install]
+WantedBy=default.target
