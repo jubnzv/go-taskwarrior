@@ -14,12 +14,21 @@ Golang API for [taskwarrior](https://taskwarrior.org/) database.
 
 ## Quickstart
 
-Read all tasks for current user:
+Example program to read the current user's tasks:
 
 ```
-tw, err := taskwarrior.NewTaskWarrior("~/.taskrc")
-tw.FetchAllTasks()
-tw.PrintTasks()
+package main
+
+import (
+	"github.com/jubnzv/go-taskwarrior"
+)
+
+func main() {
+
+	tw, _ := taskwarrior.NewTaskWarrior("~/.taskrc")
+	tw.FetchAllTasks()
+	tw.PrintTasks()
+}
 ```
 
 To add new task initialize `Task` object with desired values and use:
