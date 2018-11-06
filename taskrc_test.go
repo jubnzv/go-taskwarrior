@@ -4,8 +4,8 @@
 package taskwarrior
 
 import (
-	"testing"
 	"os/user"
+	"testing"
 )
 
 func TestPathExpandTilda(t *testing.T) {
@@ -25,7 +25,7 @@ func TestPathExpandTilda(t *testing.T) {
 	expect2 := expectOrig + "/something/else"
 	result = PathExpandTilda("~/something/else/")
 	if result != expect2 {
-		t.Errorf("Expect2: %s\tGot: %s", expect2 , result)
+		t.Errorf("Expect2: %s\tGot: %s", expect2, result)
 	}
 }
 
@@ -67,7 +67,7 @@ func TestTaskRC_MapTaskRC(t *testing.T) {
 	// Simple configuration entry
 	orig1 := "data.location=/home/tester/data"
 	expected1 := "/home/tester/data"
-	taskrc1 := &TaskRC{DataLocation:orig1}
+	taskrc1 := &TaskRC{DataLocation: orig1}
 	taskrc1.MapTaskRC(orig1)
 	if taskrc1.DataLocation != expected1 {
 		t.Errorf("Incorrect map for DataLocation: expected '%s' got '%s'", expected1, taskrc1.DataLocation)
@@ -78,7 +78,7 @@ func TestParseTaskRC(t *testing.T) {
 	// Simple configuration file
 	config1 := "./fixtures/taskrc/simple_1"
 	orig1 := "./fixtures/data_1"
-	expected1 := &TaskRC{DataLocation:orig1}
+	expected1 := &TaskRC{DataLocation: orig1}
 	result1, err := ParseTaskRC(config1)
 	if err != nil {
 		t.Errorf("Can't parse configuration file %s with following error: %v",

@@ -4,9 +4,9 @@
 package taskwarrior
 
 import (
-	"testing"
-	"os/exec"
 	"encoding/json"
+	"os/exec"
+	"testing"
 )
 
 // Helper that executes `task` with selected config path and return result as new TaskRC instances array.
@@ -14,14 +14,15 @@ func UtilTaskCmd(configPath string) ([]Task, error) {
 	var out []byte
 	if configPath != "" {
 		rcOpt := "rc:" + configPath
-		out, _ = exec.Command("task", rcOpt, "export").Output();
+		out, _ = exec.Command("task", rcOpt, "export").Output()
 	} else {
-		out, _ = exec.Command("task", "export").Output();
+		out, _ = exec.Command("task", "export").Output()
 	}
 
 	// Initialize new tasks
 	tasks := []Task{}
-	err := json.Unmarshal([]byte(out), &tasks); if err != nil {
+	err := json.Unmarshal([]byte(out), &tasks)
+	if err != nil {
 		return nil, err
 	}
 	return tasks, nil
@@ -29,8 +30,8 @@ func UtilTaskCmd(configPath string) ([]Task, error) {
 
 func TestNewTaskWarrior(t *testing.T) {
 	config1 := "./fixtures/taskrc/simple_1"
-	taskrc1 := &TaskRC{ConfigPath:config1}
-	expected1 := &TaskWarrior{Config:taskrc1}
+	taskrc1 := &TaskRC{ConfigPath: config1}
+	expected1 := &TaskWarrior{Config: taskrc1}
 	result1, err := NewTaskWarrior(config1)
 	if err != nil {
 		t.Errorf("NewTaskWarrior fails with following error: %s", err)
@@ -66,12 +67,12 @@ func TestTaskWarrior_FetchAllTasks(t *testing.T) {
 
 func TestTaskWarrior_AddTask(t *testing.T) {
 	config1 := "~/.taskrc"
-	taskrc1 := &TaskRC{ConfigPath:config1}
-	expected1 := &TaskWarrior{Config:taskrc1}
+	taskrc1 := &TaskRC{ConfigPath: config1}
+	expected1 := &TaskWarrior{Config: taskrc1}
 	result1, _ := NewTaskWarrior(config1)
 	t1 := &Task{}
 	result1.AddTask(t1)
-	if len(expected1.Tasks) + 1 != len(result1.Tasks) {
+	if len(expected1.Tasks)+1 != len(result1.Tasks) {
 		t.Errorf("Incorrect AddTask: wait tasks count '%d' got '%d'",
 			len(expected1.Tasks)+1, len(result1.Tasks))
 	}

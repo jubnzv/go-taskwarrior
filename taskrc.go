@@ -32,8 +32,8 @@
 package taskwarrior
 
 import (
-	"os"
 	"io/ioutil"
+	"os"
 	"os/user"
 	"path/filepath"
 	"reflect"
@@ -46,8 +46,8 @@ var TASKRC = PathExpandTilda("~/.taskrc")
 
 // Describes configuration file entries that currently supported by this library.
 type TaskRC struct {
-	ConfigPath		string	// Location of this .taskrc
-	DataLocation	string	`taskwarrior:"data.location"`
+	ConfigPath   string // Location of this .taskrc
+	DataLocation string `taskwarrior:"data.location"`
 }
 
 // Regular expressions that describes parser rules.
@@ -83,16 +83,18 @@ func ParseTaskRC(configPath string) (*TaskRC, error) {
 	}
 
 	// Read the given configuration file content in temporary buffer
-	file, err := os.Open(configPath); if err != nil {
+	file, err := os.Open(configPath)
+	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
-	buf, err := ioutil.ReadAll(file); if err != nil {
+	buf, err := ioutil.ReadAll(file)
+	if err != nil {
 		return nil, err
 	}
 
 	// Map content in new TaskRC instance
-	task := TaskRC{ConfigPath:configPath}
+	task := TaskRC{ConfigPath: configPath}
 	task.MapTaskRC(string(buf[:]))
 
 	return &task, nil
