@@ -63,6 +63,13 @@ func TestTaskWarrior_FetchAllTasks(t *testing.T) {
 		t.Errorf("FetchAllTasks response mismatch: expect %d got %d",
 			len(tasks), len(tw1.Tasks))
 	}
+
+	// Uninitilized database error handling
+	tw_buggy, _ := NewTaskWarrior("/tmp/does/not/exists")
+	err = tw_buggy.FetchAllTasks()
+	if err == nil {
+		t.Errorf("Incorrect uninitilized database case handling")
+	}
 }
 
 func TestTaskWarrior_AddTask(t *testing.T) {

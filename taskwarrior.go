@@ -38,6 +38,10 @@ func NewTaskWarrior(configPath string) (*TaskWarrior, error) {
 
 // Fetch all tasks for given TaskWarrior with system `taskwarrior` command call.
 func (tw *TaskWarrior) FetchAllTasks() error {
+	if tw == nil {
+		return fmt.Errorf("Uninitialized taskwarrior database!")
+	}
+
 	rcOpt := "rc:" + tw.Config.ConfigPath
 	out, err := exec.Command("task", rcOpt, "export").Output()
 	if err != nil {
