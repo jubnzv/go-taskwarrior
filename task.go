@@ -7,6 +7,7 @@ package taskwarrior
 
 // Task representation.
 type Task struct {
+	Id          int32   `json:"id"`
 	Description string  `json:"description"`
 	Project     string  `json:"project"`
 	Status      string  `json:"status"`
